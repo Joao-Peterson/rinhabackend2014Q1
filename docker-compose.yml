@@ -1,0 +1,75 @@
+version: '3.5'
+
+services:
+  api1: &apiconf
+    image: rinhabackend2023q3capi
+    environment:
+      - SERVER_PORT=5001
+      - SERVER_DB_CONNS=1
+      - SERVER_THREADS=1
+      - SERVER_WORKERS=1
+      - DB_HOST=localhost
+      - DB_PORT=5432
+      - DB_DATABASE=capi
+      - DB_USER=capi
+      - DB_PASSWORD=rinhadegalo
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    network_mode: host
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: '0.5GB'
+          
+  api2:
+    <<: *apiconf
+    environment:
+      - SERVER_PORT=5002
+      - SERVER_DB_CONNS=1
+      - SERVER_THREADS=1
+      - SERVER_WORKERS=1
+      - DB_HOST=localhost
+      - DB_PORT=5432
+      - DB_DATABASE=capi
+      - DB_USER=capi
+      - DB_PASSWORD=rinhadegalo
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - api1
+      - api2
+    network_mode: host
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: '0.5GB'
+
+  db:
+    image: postgres:15
+    restart: always
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "capi"]
+      interval: 1s
+      timeout: 1m
+      retries: 5
+      start_period: 5s
+    environment:
+      - POSTGRES_USER=pguser
+      - POSTGRES_PASSWORD=admin
+    network_mode: "host"
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./db/postgresql.conf:/docker-entrypoint-initdb.d/postgresql.conf
+    command: postgres -c config_file=/docker-entrypoint-initdb.d/postgresql.conf
+    deploy:
+      resources:
+        limits:
+          cpus: '1.2'
+          memory: '1.5GB'
