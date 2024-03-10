@@ -10,9 +10,9 @@ services:
       - SERVER_WORKERS=1
       - DB_HOST=localhost
       - DB_PORT=5432
-      - DB_DATABASE=capi
-      - DB_USER=capi
-      - DB_PASSWORD=rinhadegalo
+      - DB_DATABASE=pguser
+      - DB_USER=pguser
+      - DB_PASSWORD=admin
     restart: always
     depends_on:
       db:
@@ -33,9 +33,9 @@ services:
       - SERVER_WORKERS=1
       - DB_HOST=localhost
       - DB_PORT=5432
-      - DB_DATABASE=capi
-      - DB_USER=capi
-      - DB_PASSWORD=rinhadegalo
+      - DB_DATABASE=pguser
+      - DB_USER=pguser
+      - DB_PASSWORD=admin
 
   nginx:
     image: nginx:latest

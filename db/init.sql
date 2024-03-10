@@ -37,25 +37,24 @@ create index on transacoes (id);
 create index on transacoes (cliente);
 create index on transacoes (realizada_em desc);
 
--- exec transaction
-create or replace procedure transar(cliente_in int, saldo_in int, tipo_in boolean, valor_in int, descricao_in varchar(10))
+-- insert transaction
+create or replace procedure transar(cliente_in int, tipo_in boolean, valor_in int, descricao_in varchar(10))
 language plpgsql as 
 $$
-declare cliente_row clientes%ROWTYPE;
-declare calc int;
 begin
-	-- update
-    update clientes set saldo = saldo_in where id = cliente_in;
-
-	-- check
-	if not found then 
-		raise notice 'client not found';
-		return;
-	end if;
-
 	-- record transaction
    	insert into transacoes(cliente, tipo, valor, descricao, realizada_em)
     values (cliente_in, tipo_in, valor_in, descricao_in, now());
+end
+$$;
+
+-- update saldo
+create or replace procedure saldar(cliente_in int, saldo_in int)
+language plpgsql as 
+$$
+begin
+	-- record saldo
+	update clientes set saldo = saldo_in where id = cliente_in;
 end
 $$;
 

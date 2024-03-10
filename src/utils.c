@@ -1,15 +1,82 @@
 #include "utils.h"
+#include <string.h>
 
-bool fiobj_str_cmp(FIOBJ fiobj, char *str) {
-    const char *fiobjStr = fiobj_obj2cstr(fiobj).data;
-	if(fiobjStr == NULL) return false;
-    return (strcmp(fiobjStr, str) == 0);
+// parse id and action from path: "/jdhuiasda/32847239/action"
+char *parseIdAction(char *path, int64_t *idOut){
+	char *cursor = path;
+	char *action = NULL;
+	while(*cursor != '\0'){
+		if(isdigit(*cursor)){
+			*idOut = strtoll(cursor, &action, 10);
+			action++;
+			break;
+		}
+
+		cursor++;
+	}
+	
+	return action;
 }
 
-bool fiobj_str_substr(FIOBJ fiobj, char *str){
-    const char *fiobjStr = fiobj_obj2cstr(fiobj).data;
-	if(fiobjStr == NULL) return false;
-	char *sub = strstr(fiobjStr, str);
-	
-	return (sub != NULL);
+
+// {
+//     "valor": 1000,
+//     "tipo" : "c",
+//     "descricao" : "descricao"
+// }
+bool parseTransa(char *transa, int64_t *valor_out, char *tipo_out, char **descricao_out){
+	char *cursor = transa;
+	char *tmp;
+	int token = 0;
+
+	// rad state machine!
+	while(*cursor != '\0'){
+		switch(token){
+			// valor
+			case 0:
+				cursor = strchr(cursor, ':');
+				cursor++;
+				*valor_out = strtoll(cursor, &tmp, 10);
+
+				// value must end on comma or whitespace 
+				if(*tmp != ' ' && *tmp != ',')
+					return false;
+					
+				cursor = tmp;
+				token++;
+			break;
+
+			case 1:
+				cursor = strchr(cursor, ':');
+				cursor = strchr(cursor, '"');
+				cursor++;
+
+				if(*cursor != 'c' && *cursor != 'd')
+					return false;
+
+				*tipo_out = *cursor;	
+				token++;
+			break;
+
+			// descricao
+			case 2:
+				cursor = strchr(cursor, ':');
+				cursor = strchr(cursor, '"');
+				cursor++;
+				tmp = strchr(cursor, '"');
+				size_t len = (tmp - cursor);
+				
+				if(len > 10)
+					return false;
+					
+				char *desc = calloc(sizeof(char), len + 1);
+				memcpy(desc, cursor, len);
+				*descricao_out = desc;
+
+				return true;
+			break;
+		}
+	}
+
+	return false;
 }
