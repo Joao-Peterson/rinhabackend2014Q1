@@ -62,11 +62,13 @@ bool parseTransa(char *transa, int64_t *valor_out, char *tipo_out, char **descri
 			case 2:
 				cursor = strchr(cursor, ':');
 				cursor = strchr(cursor, '"');
+				if(cursor == NULL) return false;
+				
 				cursor++;
 				tmp = strchr(cursor, '"');
 				size_t len = (tmp - cursor);
 				
-				if(len > 10)
+				if(len < 1 || len > 10)
 					return false;
 					
 				char *desc = calloc(sizeof(char), len + 1);

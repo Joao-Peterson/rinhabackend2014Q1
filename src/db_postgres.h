@@ -661,7 +661,8 @@ static void db_process_entries_postgres(db_results_t *results){
 
 					case db_type_bool:
 						entry.size = sizeof(bool);
-						entry.value.as_bool = (bool)strcmp(PQgetvalue(results->ctx, i, j), "false");
+						const char *boolTmp = PQgetvalue(results->ctx, i, j);
+						entry.value.as_bool = *boolTmp == 't';
 					break;
 
 					case db_type_int:

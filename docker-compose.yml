@@ -2,11 +2,11 @@ version: '3.5'
 
 services:
   api1: &apiconf
-    image: rinhabackend2024q1capi
+    image: petersonsheff/rinhabackend2024q1capi
     environment:
       - SERVER_PORT=5001
-      - SERVER_DB_CONNS=1
-      - SERVER_THREADS=1
+      - SERVER_DB_CONNS=21
+      - SERVER_THREADS=20
       - SERVER_WORKERS=1
       - DB_HOST=localhost
       - DB_PORT=5432
@@ -22,14 +22,14 @@ services:
       resources:
         limits:
           cpus: '0.1'
-          memory: '0.5GB'
+          memory: '100MB'
           
   api2:
     <<: *apiconf
     environment:
       - SERVER_PORT=5002
-      - SERVER_DB_CONNS=1
-      - SERVER_THREADS=1
+      - SERVER_DB_CONNS=21
+      - SERVER_THREADS=20
       - SERVER_WORKERS=1
       - DB_HOST=localhost
       - DB_PORT=5432
@@ -49,7 +49,7 @@ services:
       resources:
         limits:
           cpus: '0.1'
-          memory: '0.5GB'
+          memory: '50MB'
 
   db:
     image: postgres:15
@@ -65,11 +65,11 @@ services:
       - POSTGRES_PASSWORD=admin
     network_mode: "host"
     volumes:
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./db/postgresql.conf:/docker-entrypoint-initdb.d/postgresql.conf
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgresql.conf:/docker-entrypoint-initdb.d/postgresql.conf
     command: postgres -c config_file=/docker-entrypoint-initdb.d/postgresql.conf
     deploy:
       resources:
         limits:
           cpus: '1.2'
-          memory: '1.5GB'
+          memory: '300MB'

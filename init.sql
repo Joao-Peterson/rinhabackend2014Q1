@@ -1,4 +1,4 @@
-create table clientes(
+create unlogged table clientes(
 	id int primary key,
 	limite bigint not null,
 	saldo bigint not null default 0
@@ -13,7 +13,7 @@ insert into clientes (id, limite) values
 	(5, 500000);
 
 -- partioned
-create table transacoes(
+create unlogged table transacoes(
 	id bigserial not null,
 	cliente int not null,
 	tipo boolean not null,

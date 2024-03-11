@@ -1,5 +1,5 @@
 ### extrato
-GET http://localhost:9999/clientes/1/extrato
+GET http://localhost:5000/clientes/1/extrato
 
 ### debitar
 POST  http://localhost:9999/clientes/1/transacao
@@ -9,3 +9,13 @@ POST  http://localhost:9999/clientes/1/transacao
     "tipo" : "c",
     "descricao" : "descricaos"
 }
+
+### debitar
+POST  http://localhost:5000/clientes/1/transacao
+
+{"valor": 1, "tipo": "c", "descricao": "toma"}
+
+### debitar
+POST  http://localhost:5000/clientes/1/transacao
+
+{"valor": 1, "tipo": "d", "descricao": "devolve"}

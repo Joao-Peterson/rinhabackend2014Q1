@@ -54,7 +54,7 @@ SOURCES+=facil.io/websockets.c
 BUILD_DIR=build
 DIST_DIR=dist
 
-GATLING_VERSION=3.9.5
+GATLING_VERSION=3.10.3
 GATLING_TOOL=gatling/gatling/bin/gatling.sh
 
 # DON'T EDIT -----------------------------------------------------
@@ -130,7 +130,7 @@ down :
 # install gatling tool
 $(GATLING_TOOL) :
 	@echo "Downloading Gatling $(GATLING_VERSION)"
-	@rm -rd gatling/gatling
+	@rm -rdf gatling/gatling
 	@curl -fsSL "https://repo1.maven.org/maven2/io/gatling/highcharts/gatling-charts-highcharts-bundle/$(GATLING_VERSION)/gatling-charts-highcharts-bundle-$(GATLING_VERSION)-bundle.zip" > ./gatling/gatling.zip
 	@unzip gatling/gatling.zip -d gatling
 	@mv gatling/gatling-charts-highcharts-bundle-$(GATLING_VERSION) gatling/gatling
@@ -140,43 +140,8 @@ $(GATLING_TOOL) :
 gatling : $(GATLING_TOOL) down up
 	sh $(GATLING_TOOL) \
 	-rm local \
-	-s RinhaBackendSimulation \
-	-rd "Simulação RinhaBackend2023Q3 - C API" \
+	-s RinhaBackendCrebitosSimulation \
+	-rd "Simulação RinhaBackend2024Q1 - C API" \
 	-rf ../results \
 	-sf ../simulations \
 	-rsf ../resources
-	@sleep 5
-	@curl -fsSL "http://localhost:9999/contagem-pessoas" > count.txt
-
-gatling-slim : $(GATLING_TOOL) down up
-	sh $(GATLING_TOOL) \
-	-rm local \
-	-s RinhaBackendSlimSimulation \
-	-rd "Simulação Slim RinhaBackend2023Q3 - C API" \
-	-rf ../results \
-	-sf ../simulations \
-	-rsf ../resources
-	@sleep 5
-	@curl -fsSL "http://localhost:9999/contagem-pessoas" > count.txt
-
-gatling-test : $(GATLING_TOOL)
-	sh $(GATLING_TOOL) \
-	-rm local \
-	-s TestSimulation \
-	-rd "Simulação Teste RinhaBackend2023Q3 - C API" \
-	-rf ../results \
-	-sf ../simulations \
-	-rsf ../resources
-	@sleep 5
-	@curl -fsSL "http://localhost:9999/contagem-pessoas" > count.txt
-
-gatling-local : build
-	sh $(GATLING_TOOL) \
-	-rm local \
-	-s LocalTestSimulation \
-	-rd "Simulação Teste (Local) RinhaBackend2023Q3 - C API" \
-	-rf ../results \
-	-sf ../simulations \
-	-rsf ../resources
-	@sleep 5
-	@curl -fsSL "http://localhost:5000/contagem-pessoas" > count.txt
