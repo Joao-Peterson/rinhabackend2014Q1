@@ -1,0 +1,11 @@
+### extrato
+GET http://localhost:9999/clientes/1/extrato
+
+### debitar
+POST  http://localhost:9999/clientes/1/transacao
+
+{
+    "valor": 10000,
+    "tipo" : "c",
+    "descricao" : "descricaos"
+}

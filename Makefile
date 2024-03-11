@@ -115,7 +115,7 @@ profile : build
 
 # create image
 image : clear
-	sudo docker build -t rinhabackend2023q3capi .
+	sudo docker build -t rinhabackend2024q1capi .
 
 # compose up
 up : image

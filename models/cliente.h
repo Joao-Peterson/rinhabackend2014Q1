@@ -69,10 +69,10 @@ int64_t clientes_debitar(clientes_t *clientes, int id, int64_t valor){
 	return saldo;
 }
 
-void clientes_update(db_t *db, int id, int64_t saldo){
+db_results_t *clientes_update(db_t *db, int id, int64_t saldo){
 	char *query = "call saldar($1, $2)";
 
-	db_exec(db, query, 2,
+	return db_exec(db, query, 2,
 		db_param_integer(id),
 		db_param_integer(saldo)
 	);

@@ -25,7 +25,7 @@ db_results_t * transa_insert(db_t *db, int cliente, bool tipo, int valor, char *
 }
 
 db_results_t *transa_extrato(db_t *db, int cliente){
-	char *query = "call extrato($1)";
+	char *query = "select valor, tipo, descricao, realizada_em from extrato($1)";
 
 	return db_exec(db, query, 1,
 		db_param_integer(cliente)

@@ -2,7 +2,7 @@ version: '3.5'
 
 services:
   api1: &apiconf
-    image: rinhabackend2023q3capi
+    image: rinhabackend2024q1capi
     environment:
       - SERVER_PORT=5001
       - SERVER_DB_CONNS=1

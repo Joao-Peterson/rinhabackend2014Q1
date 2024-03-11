@@ -1,3 +1,4 @@
+#include <time.h>
 #include "../facil.io/http.h"
 #include "../src/httpStatusCodes.h"
 #include "../src/utils.h"
@@ -39,18 +40,40 @@ void cliente_request(http_s *h){
 	}
 }
 
+// get extrato
 void get_extrato(http_s *h, int64_t id){
 	db_results_t *res = transa_extrato(ctx.db, id);
+	if(res->code != db_error_ok){
+		printf("%s", res->msg);
+	}
+	
 	cliente_t c = clientes_get_cached(&ctx.clientes, id);
 
+	// update db
+	db_results_t *updateRes = clientes_update(ctx.db, id, c.saldo);
+	if(updateRes->code != db_error_ok){
+		printf("%s", updateRes->msg);
+	}
+
+	// cur time
+	time_t curTime;
+	struct tm * curTimeInfo;
+	char timeBuffer [30];
+	time(&curTime);
+	curTimeInfo = localtime(&curTime);
+	strftime(timeBuffer, 29, "%F %T.000000", curTimeInfo);
+
 	string *json = string_new_sized(1750);
-	string_write(json, "{\"saldo\":{\"total\":%ld,\"data_extrato\":\"%s\",\"limite\":%ld},\"ultimas_transacoes\":[", 200, c.saldo, "[[[NOW]]]", c.limite);
+	string_write(json, "{\"saldo\":{\"total\":%ld,\"data_extrato\":\"%s\",\"limite\":%ld},\"ultimas_transacoes\":[", 225, c.saldo, timeBuffer, c.limite);
 
 	for(uint32_t r = 0; r < res->entries_count; r++){
 		int valor  = db_read_field(res, r, 0).value.as_int;
 		bool tipo  = db_read_field(res, r, 1).value.as_bool;
 		char *desc = db_read_field(res, r, 2).value.as_string;
 		char *time = db_read_field(res, r, 3).value.as_string;
+
+		if(r != 0)
+			string_cat_raw(json, ",", 1);
 
 		string_write(json, "{\"valor\":%ld,\"tipo\":\"%c\",\"descricao\":\"%s\",\"realizada_em\":\"%s\"}", 200, 
 			valor,
@@ -69,6 +92,7 @@ void get_extrato(http_s *h, int64_t id){
 	http_send_body(h, ret, len);
 }
 
+// saldar cliente
 void post_transa(http_s *h, int64_t id){
 	char *desc;
 	int64_t valor;
