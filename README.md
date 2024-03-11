@@ -11,14 +11,14 @@ Lib do próprio postgres para conexão com a db. Sem caching **externo**, como R
 - [Sumário](#sumário)
 - [Performance](#performance)
 - [Funcionamento](#funcionamento)
-	- [Web](#web)
-	- [Banco de dados](#banco-de-dados)
-	- [.env](#env)
+  - [Web](#web)
+  - [Banco de dados](#banco-de-dados)
+  - [.env](#env)
 - [Takeaways](#takeaways)
 - [Resultados](#resultados)
 - [Execução](#execução)
-	- [Local](#local)
-	- [Docker compose](#docker-compose)
+  - [Local](#local)
+  - [Docker compose](#docker-compose)
 - [Utilização](#utilização)
 - [Gatling](#gatling)
 - [TODO](#todo)
@@ -48,10 +48,10 @@ Muito boa aperformance 👍
 
 | serviço 		| cpu (cores) 	| memória ram(gb) |
 |-				|-				|-|
-| api 1 		| 0.1 			| 0.5 gb|
-| api 2 		| 0.1 			| 0.5 gb|
-| nginx 		| 0.1 			| 0.5 gb|
-| postgresql 	| 1.2 			| 1.5 gb|
+| api 1 		| 0.1 			| 100 mb|
+| api 2 		| 0.1 			| 100 mb|
+| nginx 		| 0.1 			| 50 mb|
+| postgresql 	| 1.2 			| 300 mb|
 
 # Funcionamento
 
@@ -78,13 +78,15 @@ loadEnvVars(NULL);
 
 # Takeaways
 
-* Containers docker em modo `network_mode: host` são masi performantes. Ao que tudo indica, a network padrão modo bridge possuí processamente extra sobre ele que afeta o desempenho, enquanto que quando se usa o host não há essa limitação
+* Containers docker em modo `network_mode: host` são mais performantes. Ao que tudo indica, a network padrão modo bridge possuí processamente extra sobre ele que afeta o desempenho, enquanto que quando se usa o host não há essa limitação
 * Webservers performantes usam uma thread para cada conexão, utilizando uma thread pool como mecanismo para tal 
 * Similarmente, queries para banco de dados usam uma conexão para cada thread, utilizando uma connection pool 
 * Base de dados gastam bastante cpu e memória se usadas muitas conexões, gargala demais, usar menos conexões se possível
 * Desativar logging desnecessário 
-* Busca em database é custoso, uma solução é concatenar os termos utilizados na busca, como nome e apelido, em uma coluna gerada pelo banco, e aplicar indexação nela, nesssa implementação foi usado indexação poir trigrama, gist op. Outra solução poderia seria uma full text search 
-* O balanço desejado é de os serviços poderem aguetnar as conexões dadas pelo nginx e que a database acompanhe o ritmo das api's. Portanto, quem dita o ritmo de tudo é o balanceador de carga, que vai limitar as conexões repassadas as api's, api's que devem suportar essa carga tendo uma relação aproximada de 1:1 de threads para db connections, sem usar muitas connections para não gastar muita memória e cpu do banco. Nessa inmplementação uma razão de `1024 nginx workers >> 2 api's de 50 threads / connections cada`.
+* Kit preguiçoso:
+  * `CREATE UNLOGGED TABLE`
+  * `fsync = 0`
+* [PgTune](pgtune.leopard.in.ua) para 'tunar' a performance do postgres para as restrições de memória
 
 # Resultados
 
