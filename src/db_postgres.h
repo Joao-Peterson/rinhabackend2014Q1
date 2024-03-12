@@ -630,6 +630,9 @@ static void db_process_entries_postgres(db_results_t *results){
 	results->entries_count = PQntuples(results->ctx);
 	results->fields_count = PQnfields(results->ctx);
 
+	if(results->entries_count == 0 || results->fields_count == 0) 
+		return;
+
 	results->entries = malloc(sizeof(db_field_t*) * results->entries_count);
 	results->fields = malloc(sizeof(char*) * results->fields_count);
 

@@ -1,5 +1,7 @@
 # Rinha de gal... backend
 
+![](images/giga.jpg)
+
 Meu projeto para [rinha de backend 2024 Q1](https://github.com/zanfranceschi/rinha-de-backend-2024-q1) feito em C.
 
 Feito usando [facil.io](https://facil.io), uma biblioteca C que traz um web server performante + mini http framework. Special thanks to [boazsegev](https://github.com/boazsegev/facil.io) for the lib!

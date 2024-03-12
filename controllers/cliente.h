@@ -54,6 +54,7 @@ void get_extrato(http_s *h, int64_t id){
 	if(updateRes->code != db_error_ok){
 		printf("%s", updateRes->msg);
 	}
+	db_results_destroy(ctx.db, updateRes);
 
 	// cur time
 	time_t curTime;
@@ -86,21 +87,23 @@ void get_extrato(http_s *h, int64_t id){
 	string_write(json, "]}", 5);
 
 	size_t len = json->len;
-	char *ret = string_unwrap(json);
 	
 	h->status = http_status_code_Ok;
-	http_send_body(h, ret, len);
+	http_send_body(h, json->raw, len);
+	string_destroy(json);
+	db_results_destroy(ctx.db, res);
 }
 
 // saldar cliente
 void post_transa(http_s *h, int64_t id){
-	char *desc;
+	char *desc = calloc(sizeof(char), 100);
 	int64_t valor;
 	char tipo;
 
 	// parse json
 	if(!parseTransa(fiobj_obj2cstr(h->body).data, &valor, &tipo, &desc)){
 		http_send_error(h, http_status_code_BadRequest);
+		free(desc);
 		return;
 	}
 
@@ -114,6 +117,7 @@ void post_transa(http_s *h, int64_t id){
 	// on error
 	if(saldo == INT64_MIN){
 		http_send_error(h, http_status_code_UnprocessableEntity);
+		free(desc);
 		return;
 	}
 
@@ -130,4 +134,6 @@ void post_transa(http_s *h, int64_t id){
 	int len = snprintf(json, 149, "{\"limite\":%ld,\"saldo\":%ld}", ctx.clientes.cliente[id].limite, saldo);
 	h->status = http_status_code_Ok;
 	http_send_body(h, json, len);
+	free(json);
+	free(desc);
 }

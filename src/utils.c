@@ -71,9 +71,7 @@ bool parseTransa(char *transa, int64_t *valor_out, char *tipo_out, char **descri
 				if(len < 1 || len > 10)
 					return false;
 					
-				char *desc = calloc(sizeof(char), len + 1);
-				memcpy(desc, cursor, len);
-				*descricao_out = desc;
+				memcpy(*descricao_out, cursor, len);
 
 				return true;
 			break;

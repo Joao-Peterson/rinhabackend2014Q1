@@ -131,12 +131,12 @@ db_state_t db_stat_function_map(db_t *db){
 void db_destroy_function_map(db_t *db){
 	if(db == NULL) return;
 	
-	free(db->host);
-	free(db->port);
-	free(db->database);
-	free(db->user);
-	free(db->password);
-	free(db->role);
+	db->host;
+	db->port;
+	db->database;
+	db->user;
+	db->password;
+	db->role;
 	
 	// context free
 	switch(db->vendor){
@@ -393,9 +393,6 @@ void db_results_destroy(const db_t *db, db_results_t *results){
 		if(results->fields != NULL){
 			for(int64_t i = 0; i < results->entries_count; i++)						// for each entry
 				free(results->entries[i]);											// free whole entry row
-
-			// for(int64_t j = 0; j < results->fields_count; j++)
-			// 	free(results->fields[j]);											// free fields names
 		}
 
 		free(results->entries);

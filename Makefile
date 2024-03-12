@@ -104,7 +104,7 @@ mem : build
 	@sudo docker-compose down
 	@sudo docker-compose up db -d
 	@sleep 5
-	valgrind -s --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(BINARY)
+	valgrind -s --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=valgrind.out ./$(BINARY)
 # valgrind --tool=callgrind $(TEST_EXE)
 
 # profile memory consuption
@@ -141,6 +141,15 @@ gatling : $(GATLING_TOOL) down up
 	sh $(GATLING_TOOL) \
 	-rm local \
 	-s RinhaBackendCrebitosSimulation \
+	-rd "Simulação RinhaBackend2024Q1 - C API" \
+	-rf ../results \
+	-sf ../simulations \
+	-rsf ../resources
+
+gatlingLocal : $(GATLING_TOOL)
+	sh $(GATLING_TOOL) \
+	-rm local \
+	-s LocalRinhaBackendCrebitosSimulation \
 	-rd "Simulação RinhaBackend2024Q1 - C API" \
 	-rf ../results \
 	-sf ../simulations \
