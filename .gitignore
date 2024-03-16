@@ -9,7 +9,6 @@ massif.*
 
 *.o
 webserver
-nginx.conf
 .env
 
 vgcore**
