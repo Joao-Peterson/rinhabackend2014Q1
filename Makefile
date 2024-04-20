@@ -115,7 +115,7 @@ profile : build
 
 # create image
 image : clear
-	sudo docker build -t rinhabackend2024q1capi .
+	sudo docker build -t petersonsheff/rinhabackend2024q1capi .
 
 # compose up
 up : image

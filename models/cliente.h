@@ -29,7 +29,7 @@ void clientes_init(db_t *db, clientes_t *clientes){
 		printf("%s", res->msg);
 	}
 	else{
-		for(size_t i = 0; i < res->entries_count; i++){
+		for(int64_t i = 0; i < res->entries_count; i++){
 			int id = db_read_field(res, i, 0).value.as_int;
 			clientes->cliente[id].limite = db_read_field(res, i, 1).value.as_int;
 			clientes->cliente[id].saldo  = db_read_field(res, i, 2).value.as_int;
@@ -71,6 +71,9 @@ int64_t clientes_debitar(clientes_t *clientes, int id, int64_t valor){
 
 db_results_t *clientes_update(db_t *db, int id, int64_t saldo){
 	char *query = "call saldar($1, $2)";
+
+	// char *query = 
+	// 	"update clientes set saldo = $2 where id = $1";
 
 	return db_exec(db, query, 2,
 		db_param_integer(id),

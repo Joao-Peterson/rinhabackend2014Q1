@@ -4,6 +4,7 @@
 - [Resultados](#resultados)
 - [Timeline](#timeline)
   - [Teste](#teste)
+    - [Usando queries peladas, sem procedures ou prepared queries](#usando-queries-peladas-sem-procedures-ou-prepared-queries)
     - [Tweak db (Versão entregue)](#tweak-db-versão-entregue)
     - [Threads and conns to 20](#threads-and-conns-to-20)
     - [Threads and conns to 5](#threads-and-conns-to-5)
@@ -12,6 +13,12 @@
     - [Base test](#base-test)
 
 ## Teste 
+
+### Usando queries peladas, sem procedures ou prepared queries
+
+Muda bem pouca coisa
+
+![](images/image-6.png)
 
 ### Tweak db (Versão entregue)
 
@@ -29,7 +36,7 @@ huge_pages = off
 min_wal_size = 1GB
 max_wal_size = 4GB
 ```
-
+'
 ![](images/image-5.png)
 
 ### Threads and conns to 20
